@@ -1,6 +1,8 @@
 use std::ops::{BitAnd, BitOr, BitXor, Div, Mul, Not};
-use num_enum::{IntoPrimitive, TryFromPrimitive};
+
 use libcamera_sys::*;
+use num_enum::{IntoPrimitive, TryFromPrimitive};
+
 use crate::orientation::Orientation;
 
 #[derive(Debug, Clone, Copy, Eq, PartialEq, TryFromPrimitive, IntoPrimitive)]
@@ -17,39 +19,26 @@ pub enum Transform {
 }
 
 impl Transform {
-
     pub fn is_identity(self) -> bool {
-        unsafe {
-            libcamera_transform_is_identity(self.into())
-        }
+        unsafe { libcamera_transform_is_identity(self.into()) }
     }
 
     pub fn invert(self) -> Self {
-        unsafe {
-            Transform::try_from_primitive(libcamera_transform_inv(self.into()))
-                .unwrap()
-        }
+        unsafe { Transform::try_from_primitive(libcamera_transform_inv(self.into())).unwrap() }
     }
 
     pub fn bitwise_not(self) -> Self {
-        unsafe {
-            Transform::try_from_primitive(libcamera_transform_bitwise_not(self.into()))
-                .unwrap()
-        }
+        unsafe { Transform::try_from_primitive(libcamera_transform_bitwise_not(self.into())).unwrap() }
     }
 
     pub fn try_from_rotation(value: i32) -> Result<Self, ()> {
         let mut success = false;
-        let result = unsafe {
-            libcamera_transform_from_rotation(value, &mut success as *mut _)
-        };
+        let result = unsafe { libcamera_transform_from_rotation(value, &mut success as *mut _) };
         if success {
-            TryFromPrimitive::try_from_primitive(result)
-                .map_err(|_e| ())
+            TryFromPrimitive::try_from_primitive(result).map_err(|_e| ())
         } else {
             Err(())
         }
-
     }
 }
 
@@ -80,22 +69,15 @@ impl BitAnd for Transform {
     type Output = Self;
 
     fn bitand(self, rhs: Self) -> Self::Output {
-        unsafe {
-            Transform::try_from_primitive(libcamera_transform_bitwise_and(self.into(), rhs.into()))
-                .unwrap()
-        }
+        unsafe { Transform::try_from_primitive(libcamera_transform_bitwise_and(self.into(), rhs.into())).unwrap() }
     }
 }
-
 
 impl BitOr for Transform {
     type Output = Self;
 
     fn bitor(self, rhs: Self) -> Self::Output {
-        unsafe {
-            Transform::try_from_primitive(libcamera_transform_bitwise_or(self.into(), rhs.into()))
-                .unwrap()
-        }
+        unsafe { Transform::try_from_primitive(libcamera_transform_bitwise_or(self.into(), rhs.into())).unwrap() }
     }
 }
 
@@ -103,10 +85,7 @@ impl BitXor for Transform {
     type Output = Self;
 
     fn bitxor(self, rhs: Self) -> Self::Output {
-        unsafe {
-            Transform::try_from_primitive(libcamera_transform_xor(self.into(), rhs.into()))
-                .unwrap()
-        }
+        unsafe { Transform::try_from_primitive(libcamera_transform_xor(self.into(), rhs.into())).unwrap() }
     }
 }
 
@@ -114,10 +93,7 @@ impl Mul for Transform {
     type Output = Self;
 
     fn mul(self, rhs: Self) -> Self::Output {
-        unsafe {
-            Transform::try_from_primitive(libcamera_transform_mul(self.into(), rhs.into()))
-                .unwrap()
-        }
+        unsafe { Transform::try_from_primitive(libcamera_transform_mul(self.into(), rhs.into())).unwrap() }
     }
 }
 
@@ -134,8 +110,7 @@ impl Mul<Transform> for Orientation {
 
     fn mul(self, rhs: Transform) -> Self::Output {
         unsafe {
-            Orientation::try_from_primitive(libcamera_orientation_mul_transform(self.into(), rhs.into()))
-                .unwrap()
+            Orientation::try_from_primitive(libcamera_orientation_mul_transform(self.into(), rhs.into())).unwrap()
         }
     }
 }
@@ -144,10 +119,7 @@ impl Div for Orientation {
     type Output = Transform;
 
     fn div(self, rhs: Self) -> Self::Output {
-        unsafe {
-            Transform::try_from_primitive(libcamera_orientations_divide(self.into(), rhs.into()))
-                .unwrap()
-        }
+        unsafe { Transform::try_from_primitive(libcamera_orientations_divide(self.into(), rhs.into())).unwrap() }
     }
 }
 
@@ -180,7 +152,10 @@ mod tests {
         assert_eq!(Transform::Identity | Transform::HFlip, Transform::HFlip);
         assert_eq!(Transform::HFlip | Transform::HFlip, Transform::HFlip);
         assert_eq!(Transform::VFlip | Transform::VFlip, Transform::VFlip);
-        assert_eq!(Transform::Rot270 | Transform::Rot180Transpose, Transform::Rot180Transpose);
+        assert_eq!(
+            Transform::Rot270 | Transform::Rot180Transpose,
+            Transform::Rot180Transpose
+        );
     }
 
     #[test]
@@ -190,7 +165,6 @@ mod tests {
         assert_eq!(Transform::HFlip ^ Transform::HFlip, Transform::Identity);
         assert_eq!(Transform::VFlip ^ Transform::Identity, Transform::VFlip);
     }
-
 
     #[test]
     fn test_invert() {
@@ -268,7 +242,10 @@ mod tests {
         assert_eq!(Orientation::Rotate90 / Orientation::Rotate180, Transform::Rot270);
         assert_eq!(Orientation::Rotate90 / Orientation::Rotate270, Transform::Rot180);
         assert_eq!(Orientation::Rotate180 / Orientation::Rotate0, Transform::Rot180);
-        assert_eq!(Orientation::Rotate0Mirror / Orientation::Rotate90Mirror, Transform::Rot90);
+        assert_eq!(
+            Orientation::Rotate0Mirror / Orientation::Rotate90Mirror,
+            Transform::Rot90
+        );
     }
 
     #[test]
@@ -278,10 +255,16 @@ mod tests {
         assert_eq!(Orientation::Rotate180 * Transform::Rot90, Orientation::Rotate270);
         assert_eq!(Orientation::Rotate270 * Transform::Rot90, Orientation::Rotate0);
         assert_eq!(Orientation::Rotate0 * Transform::Rot180, Orientation::Rotate180);
-        assert_eq!(Orientation::Rotate90 * Transform::Rot180 * Transform::VFlip, Orientation::Rotate90Mirror);
+        assert_eq!(
+            Orientation::Rotate90 * Transform::Rot180 * Transform::VFlip,
+            Orientation::Rotate90Mirror
+        );
         assert_eq!(Orientation::Rotate180 * Transform::Rot180, Orientation::Rotate0);
         assert_eq!(Orientation::Rotate270 * Transform::Rot180, Orientation::Rotate90);
-        assert_eq!(Orientation::Rotate90Mirror * Transform::Rot270, Orientation::Rotate180Mirror);
+        assert_eq!(
+            Orientation::Rotate90Mirror * Transform::Rot270,
+            Orientation::Rotate180Mirror
+        );
     }
 
     #[test]
@@ -293,6 +276,9 @@ mod tests {
         assert_eq!(Transform::from(Orientation::Rotate0Mirror), Transform::HFlip);
         assert_eq!(Transform::from(Orientation::Rotate90Mirror), Transform::Transpose);
         assert_eq!(Transform::from(Orientation::Rotate180Mirror), Transform::VFlip);
-        assert_eq!(Transform::from(Orientation::Rotate270Mirror), Transform::Rot180Transpose);
+        assert_eq!(
+            Transform::from(Orientation::Rotate270Mirror),
+            Transform::Rot180Transpose
+        );
     }
 }
