@@ -29,10 +29,6 @@ libcamera_orientation_t libcamera_orientation_from_rotation(int angle, bool *suc
 
 #ifdef __cplusplus
 }
-
-#include <libcamera/orientation.h>
-libcamera::Orientation libcamera_orientation_to_cpp_orientation(libcamera_orientation_t orientation);
-libcamera_orientation_t libcamera_orientation_from_cpp_orientation(libcamera::Orientation orientation);
 #endif // __cplusplus
 
 
