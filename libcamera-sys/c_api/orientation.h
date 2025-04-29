@@ -1,12 +1,7 @@
 #ifndef __LIBCAMERA_C_ORIENTATION__
 #define __LIBCAMERA_C_ORIENTATION__
 
-//#include <iostream>
-//#include <stdint.h>
-//#include <stdbool.h>
-//#include <stddef.h>
-//#include <cstddef>
-//#include <sys/types.h>
+#include <stdbool.h>
 
 #ifdef __cplusplus
 extern "C" {
