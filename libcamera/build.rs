@@ -6,17 +6,11 @@ use std::{
 use semver::{Comparator, Op, Version};
 
 fn main() {
-    let libcamera = match pkg_config::probe_library("libcamera") {
-        Ok(lib) => Ok(lib),
-        Err(e) => match pkg_config::probe_library("camera") {
-            Ok(lib) => Ok(lib),
-            Err(_) => Err(e),
-        },
-    }
-    .unwrap();
-    let libcamera_version = Version::parse(&libcamera.version)
-        .map_err(|e| format!("Failed to parse libcamera version: {e}"))
+    let libcamera = pkg_config::probe_library("libcamera")
+        .or_else(|e| pkg_config::probe_library("camera").or(Err(e)))
         .unwrap();
+    let libcamera_version = Version::parse(&libcamera.version)
+        .expect("Failed to parse libcamera version");
 
     let versioned_files = Path::new("versioned_files");
     let mut candidates = std::fs::read_dir(versioned_files)

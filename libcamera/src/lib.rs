@@ -15,4 +15,6 @@ pub mod stream;
 pub mod utils;
 
 mod generated;
+pub mod orientation;
+
 pub use generated::*;
