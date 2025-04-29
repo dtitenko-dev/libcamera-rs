@@ -22,13 +22,13 @@ pub enum OrientationError {
 }
 
 impl Orientation {
-    pub fn try_from_rotation(angle: i32) -> Result<Self, OrientationError> {
+    pub fn try_from_rotation(angle: i32) -> Result<Self, ()> {
         let mut success = false;
         let orientation = unsafe { libcamera_orientation_from_rotation(angle, &mut success as *mut bool) };
         if success {
-            Orientation::try_from_primitive(orientation as u32).or(Err(OrientationError::ConversionError))
+            Orientation::try_from_primitive(orientation as u32).or(Err(()))
         } else {
-            Err(OrientationError::ConversionError)
+            Err(())
         }
     }
 }

@@ -44,14 +44,14 @@ bool libcamera_transform_is_identity(libcamera_transform_t t) {
     return !static_cast<libcamera::Transform>(t);
 }
 
-libcamera_transform_t libcamera_transform_from_orientation(libcamera_orientation_t o) {
-    return static_cast<libcamera_transform_t>(
-        libcamera::transformFromOrientation(static_cast<libcamera::Orientation>(o))
-    );
-}
+//libcamera_transform_t libcamera_transform_from_orientation(libcamera_orientation_t o) {
+//    return static_cast<libcamera_transform_t>(
+//        libcamera::transformFromOrientation(static_cast<libcamera::Orientation>(o))
+//    );
+//}
 
-libcamera_transform_t libcamera_orientation_mul_transform(libcamera_orientation_t o, libcamera_transform_t t) {
-    return static_cast<libcamera_transform_t>(
+libcamera_orientation_t libcamera_orientation_mul_transform(libcamera_orientation_t o, libcamera_transform_t t) {
+    return static_cast<libcamera_orientation_t>(
         static_cast<libcamera::Orientation>(o) * static_cast<libcamera::Transform>(t)
     );
 }

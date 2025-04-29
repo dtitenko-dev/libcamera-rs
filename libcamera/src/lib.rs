@@ -16,5 +16,6 @@ pub mod utils;
 
 mod generated;
 pub mod orientation;
+pub mod transform;
 
 pub use generated::*;
