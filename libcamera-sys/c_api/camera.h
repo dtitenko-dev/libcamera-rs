@@ -5,6 +5,7 @@
 #include "request.h"
 #include "signal.h"
 #include "stream.h"
+#include "orientation.h"
 
 #include <stddef.h>
 
@@ -34,6 +35,8 @@ void libcamera_camera_configuration_destroy(libcamera_camera_configuration_t* co
 size_t libcamera_camera_configuration_size(const libcamera_camera_configuration_t* config);
 libcamera_stream_configuration_t *libcamera_camera_configuration_at(libcamera_camera_configuration_t* config, size_t index);
 libcamera_camera_configuration_status_t libcamera_camera_configuration_validate(libcamera_camera_configuration_t* config);
+void libcamera_camera_configuration_set_orientation(libcamera_camera_configuration_t* config, libcamera_orientation_t orientation);
+libcamera_orientation_t libcamera_camera_configuration_get_orientation(const libcamera_camera_configuration_t* config);
 
 libcamera_camera_t *libcamera_camera_copy(libcamera_camera_t *cam);
 void libcamera_camera_destroy(libcamera_camera_t *cam);

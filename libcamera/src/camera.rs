@@ -12,6 +12,7 @@ use libcamera_sys::*;
 
 use crate::{
     control::{ControlInfoMap, ControlList, PropertyList},
+    orientation::Orientation,
     request::Request,
     stream::{StreamConfigurationRef, StreamRole},
     utils::Immutable,
@@ -103,15 +104,30 @@ impl CameraConfiguration {
             .try_into()
             .unwrap()
     }
+
+    pub fn set_orientation(&mut self, orientation: Orientation) {
+        unsafe {
+            libcamera_camera_configuration_set_orientation(
+                self.ptr.as_ptr(),
+                orientation as libcamera_orientation::Type,
+            );
+        }
+    }
+
+    pub fn orientation(&self) -> Orientation {
+        unsafe { libcamera_camera_configuration_get_orientation(self.ptr.as_ptr()) }
+            .try_into()
+            .expect("Unsupported orientation")
+    }
 }
 
 impl core::fmt::Debug for CameraConfiguration {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let mut list = f.debug_list();
-        for i in 0..self.len() {
-            list.entry(&self.get(i).unwrap().0);
-        }
-        list.finish()
+        let streams = (0..self.len()).map(|i| self.get(i).unwrap().0).collect::<Vec<_>>();
+        f.debug_struct("CameraConfiguration")
+            .field("orientation", &self.orientation())
+            .field("streams", &streams)
+            .finish()
     }
 }
 

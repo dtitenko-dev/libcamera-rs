@@ -18,6 +18,14 @@ libcamera_stream_configuration_t *libcamera_camera_configuration_at(libcamera_ca
     }
 }
 
+void libcamera_camera_configuration_set_orientation(libcamera_camera_configuration_t* config, libcamera_orientation_t orientation) {
+    config->orientation = static_cast<libcamera::Orientation>(orientation);
+}
+
+libcamera_orientation_t libcamera_camera_configuration_get_orientation(const libcamera_camera_configuration_t* config) {
+    return static_cast<libcamera_orientation_t>(config->orientation);
+}
+
 libcamera_camera_configuration_status_t libcamera_camera_configuration_validate(libcamera_camera_configuration_t* config) {
     return config->validate();
 }
