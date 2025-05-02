@@ -57,6 +57,21 @@ impl From<Orientation> for Transform {
     }
 }
 
+impl Into<Orientation> for Transform {
+    fn into(self) -> Orientation {
+        match self { 
+            Transform::Identity => Orientation::Rotate0,
+            Transform::HFlip => Orientation::Rotate0Mirror,
+            Transform::Rot180 => Orientation::Rotate180,
+            Transform::VFlip => Orientation::Rotate180Mirror,
+            Transform::Transpose => Orientation::Rotate90Mirror,
+            Transform::Rot90 => Orientation::Rotate90,
+            Transform::Rot270 => Orientation::Rotate270,
+            Transform::Rot180Transpose => Orientation::Rotate270Mirror,
+        }
+    }
+}
+
 impl Not for Transform {
     type Output = Transform;
 
